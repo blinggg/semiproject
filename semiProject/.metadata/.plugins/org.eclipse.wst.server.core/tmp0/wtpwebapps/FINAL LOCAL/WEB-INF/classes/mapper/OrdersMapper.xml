@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.OrdersMapper">
+   <select id="packagelist" resultType="com.example.domain.OrdersVO">
+       select orders_no, users_id, photo_package_image, photo_package_code, photo_package_title, package_cart_package_code, package_cart_price, orders_package_quantity, orders_day, orders_paytype, (package_cart_price*orders_package_quantity) total
+       from photo_package p, package_cart c, package_orders o, users u
+       where o.package_cart_ono=c.package_cart_no and c.package_cart_package_code=p.photo_package_code and u.users_id=c.package_cart_id
+       and users_id=#{users_id} and package_orders_status not in(1)
+       order by orders_day desc
+    </select>
+    
+     <select id="costumelist" resultType="com.example.domain.OrdersVO">
+      select orders_no, users_id, lend_costume_image, lend_costume_code,lend_costume_name, costume_cart_costume_code, costume_cart_price, orders_costume_quantity, orders_day, orders_paytype, (costume_cart_price*orders_costume_quantity) total
+       from lend_costume l, costume_cart c, costume_orders o, users u
+       where o.costume_cart_ono=c.costume_cart_no and c.costume_cart_costume_code=l.lend_costume_code and u.users_id=c.costume_cart_id
+       and users_id=#{users_id} and costume_orders_status not in(1)
+       order by orders_day desc
+    </select>
+    
+    <update id="pup">
+       update package_orders set package_orders_status=1 where orders_no=#{orders_no}
+    </update>
+    
+    <update id="cup">
+       update costume_orders set costume_orders_status=1 where orders_no=#{orders_no}
+    </update>
+
+    <select id="point" resultType="int">
+       select users_point from users where users_id=#{users_id}
+    </select>
+    <insert id="packageInsert">
+    	insert into package_orders(package_cart_ono, orders_package_quantity, orders_day, orders_paytype)
+    	values(#{package_cart_ono}, #{orders_package_quantity}, now(), #{orders_paytype})
+    </insert>
+    <insert id="costumeInsert">
+    	insert into costume_orders(costume_cart_ono, orders_costume_quantity, orders_day, orders_paytype)
+    	values(#{costume_cart_ono}, #{orders_costume_quantity}, now(), #{orders_paytype})
+    </insert>
+    <select id="PackageOrdersCheck" resultType="com.example.domain.OrdersVO">
+    	select * from package_orders where package_cart_ono=#{package_cart_no}
+    </select>
+    <select id="CostumeOrdersCheck" resultType="com.example.domain.OrdersVO">
+    	select * from costume_orders where costume_cart_ono=#{costume_cart_no}
+    </select>
+</mapper>

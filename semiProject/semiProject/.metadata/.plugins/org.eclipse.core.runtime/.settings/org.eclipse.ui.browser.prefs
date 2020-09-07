@@ -1,0 +1,3 @@
+browsers=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<web-browsers current\="0">\r\n<system/>\r\n<external location\="C\:\\Program Files\\Internet Explorer\\iexplore.exe" name\="Internet Explorer"/>\r\n<external location\="C\:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe" name\="Chrome"/>\r\n</web-browsers>
+eclipse.preferences.version=1
+internalWebBrowserHistory=http\://localhost\:8088/semiProject/sell_status/list.jsp|*|http\://localhost\:8088/semiProject/product/list.jsp|*|http\://localhost\:8088/semiProject/index.jsp|*|http\://localhost\:8088/semiProject/user/cvs_login.jsp|*|http\://localhost\:8088/semiProject/denied.jsp|*|http\://localhost\:8088/semiProject/|*|

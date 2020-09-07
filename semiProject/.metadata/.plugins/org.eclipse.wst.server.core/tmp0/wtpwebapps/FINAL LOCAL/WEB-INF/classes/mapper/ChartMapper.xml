@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ChartMapper">
+    <select id="packageOrdersList" resultType="hashmap">
+        select orders_no, users_id, users_name, photo_package_title, package_cart_quantity, package_cart_price, 
+        (package_cart_quantity*package_cart_price) package_total,orders_day, orders_paytype
+      from package_orders o, package_cart c, photo_package p, users u
+      where o.package_cart_ono=c.package_cart_no and c.package_cart_package_code=p.photo_package_code and c.package_cart_id=u.users_id
+      <if test="searchType=='photo_package_title'">
+           and photo_package_title like concat('%', #{keyword}, '%')
+        </if>
+        <if test="searchType=='orders_paytype'">
+           and orders_paytype like concat('%', #{keyword}, '%')
+        </if>
+        <if test="searchType=='orders_day'">
+           and MONTH(orders_day) like concat('%', #{keyword}, '%')
+        </if>
+        order by orders_day desc 
+      limit #{pageStart}, #{perPageNum}
+    </select>
+    
+    <select id="costumeOrdersList" resultType="hashmap">
+        select orders_no, users_id, users_name, lend_costume_name, costume_cart_quantity, costume_cart_price, (costume_cart_quantity*costume_cart_price) costume_total, 
+      orders_day, orders_paytype
+      from costume_orders o, costume_cart c, lend_costume l, users u
+      where o.costume_cart_ono=c.costume_cart_no and c.costume_cart_costume_code=l.lend_costume_code and c.costume_cart_id=u.users_id
+        <if test="searchType=='lend_costume_name'">
+           and lend_costume_name like concat('%', #{keyword}, '%')
+        </if>
+        <if test="searchType=='orders_paytype'">
+           and orders_paytype like concat('%', #{keyword}, '%')
+        </if>
+        <if test="searchType=='orders_day'">
+           and MONTH(orders_day) like concat('%', #{keyword}, '%')
+        </if>
+        order by orders_day desc 
+      limit #{pageStart}, #{perPageNum}
+    </select>
+    
+    <select id="packageorderCount" resultType="int">
+       select count(*) from(select * from package_orders, package_cart, photo_package, users
+      where package_cart_ono=package_cart_no and package_cart_package_code=photo_package_code and package_cart_id=users_id) orders
+      <if test="searchType=='photo_package_title'">
+           where package_cart_ono=package_cart_no and package_cart_package_code=photo_package_code and package_cart_id=users_id
+           and photo_package_title like concat('%', #{keyword}, '%')
+           order by orders_day desc 
+        </if>
+        <if test="searchType=='orders_paytype'">
+           where package_cart_ono=package_cart_no and package_cart_package_code=photo_package_code and package_cart_id=users_id
+           and orders_paytype like concat('%', #{keyword}, '%')
+           order by orders_day desc 
+        </if>
+        <if test="searchType=='orders_day'">
+           where package_cart_ono=package_cart_no and package_cart_package_code=photo_package_code and package_cart_id=users_id
+           and MONTH(orders_day) like concat('%', #{keyword}, '%')
+           order by orders_day desc 
+        </if>
+    </select>
+    
+    <select id="costumeorderCount" resultType="int">
+       select count(*) from(select * from costume_orders o, costume_cart c, lend_costume l, users u
+      where costume_cart_ono=costume_cart_no and costume_cart_costume_code=lend_costume_code and costume_cart_id=users_id) orders
+        <if test="searchType=='lend_costume_name'">
+           where costume_cart_ono=costume_cart_no and costume_cart_costume_code=lend_costume_code and costume_cart_id=users_id
+           and lend_costume_name like concat('%', #{keyword}, '%')
+         order by orders_day desc 
+        </if>
+        <if test="searchType=='orders_paytype'">
+           where costume_cart_ono=costume_cart_no and costume_cart_costume_code=lend_costume_code and costume_cart_id=users_id
+           and orders_paytype like concat('%', #{keyword}, '%')
+         order by orders_day desc 
+        </if>
+        <if test="searchType=='orders_day'">
+           where costume_cart_ono=costume_cart_no and costume_cart_costume_code=lend_costume_code and costume_cart_id=users_id
+           and MONTH(orders_day) like concat('%', #{keyword}, '%')
+         order by orders_day desc 
+        </if>
+    </select>
+    
+    
+   <select id="packagechart" resultType="com.example.domain.ChartsVO">
+        select photo_package_title name, (sum(orders_package_quantity)*package_cart_price) value
+       from package_orders o, package_cart c, photo_package p, users u
+       where p.photo_package_code=c.package_cart_package_code and c.package_cart_no=o.package_cart_ono and u.users_id=c.package_cart_id
+        and year(orders_day) like #{year} and MONTH(orders_day) like #{month}
+       group by photo_package_title
+       order by photo_package_title;
+    </select>
+    
+    <select id="packagechart2" resultType="com.example.domain.ChartsVO">
+       select photo_package_title name, sum(orders_package_quantity) value
+       from package_orders o, package_cart c, photo_package p, users u
+       where p.photo_package_code=c.package_cart_package_code and c.package_cart_no=o.package_cart_ono and u.users_id=c.package_cart_id
+           and year(orders_day) like #{year} and MONTH(orders_day) like #{month}
+        group by photo_package_title
+       order by photo_package_title;
+    </select>
+    
+    <select id="costumechart" resultType="com.example.domain.ChartsVO">
+        select lend_costume_name name, (sum(orders_costume_quantity)*costume_cart_price) value
+       from costume_orders o, costume_cart c, lend_costume l, users u
+       where o.costume_cart_ono=c.costume_cart_no and c.costume_cart_costume_code=l.lend_costume_code and u.users_id=c.costume_cart_id
+          and year(orders_day) like #{year} and MONTH(orders_day) like #{month}
+       group by lend_costume_name
+       order by lend_costume_name
+    </select>
+    
+    <select id="costumechart2" resultType="com.example.domain.ChartsVO">
+        select lend_costume_name name, sum(orders_costume_quantity) value
+       from costume_orders o, costume_cart c, lend_costume l, users u
+       where o.costume_cart_ono=c.costume_cart_no and c.costume_cart_costume_code=l.lend_costume_code and u.users_id=c.costume_cart_id
+          and year(orders_day) like #{year} and MONTH(orders_day) like #{month}
+       group by lend_costume_name
+       order by lend_costume_name
+    </select>
+</mapper>

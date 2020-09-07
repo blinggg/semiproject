@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.Lend_CostumeMapper">
+    <select id="list" resultType="com.example.domain.Lend_CostumeVO">
+        select * from lend_costume where lend_costume_code not in('0000')
+        <if test="searchType=='lend_costume_code'">
+        	and lend_costume_code like concat('%', #{keyword}, '%')
+        </if>
+        <if test="searchType=='lend_costume_name'">
+        	and lend_costume_name like concat('%', #{keyword}, '%')
+        </if>
+        limit #{pageStart}, #{perPageNum}
+    </select>
+    <select id="insert">
+        insert into lend_costume(lend_costume_code,lend_costume_name,lend_costume_image,lend_costume_amount,lend_costume_price,lend_costume_content) 
+        values(#{lend_costume_code},#{lend_costume_name},#{lend_costume_image},#{lend_costume_amount},#{lend_costume_price},#{lend_costume_content})
+    </select>
+    <select id="read" resultType="com.example.domain.Lend_CostumeVO">
+    	select * from lend_costume where lend_costume_code=#{lend_costume_code}
+    </select>
+    <select id="totalCount" resultType="int"> 
+    	select count(*) from lend_costume
+    </select>
+    <update id="update">
+    	update lend_costume set lend_costume_name=#{lend_costume_name},lend_costume_image=#{lend_costume_image},
+    	lend_costume_price=#{lend_costume_price},lend_costume_content=#{lend_costume_content} 
+    	where lend_costume_code=#{lend_costume_code}
+    </update>
+    <delete id="delete">
+    	delete from lend_costume where lend_costume_code=#{lend_costume_code}
+    </delete>
+</mapper>

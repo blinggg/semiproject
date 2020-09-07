@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.BoardMapper">
+
+    <select id="QnAList" resultType="com.example.domain.BoardVO">
+        select * from board order by board_regdate desc limit #{pageStart}, #{perPageNum}
+    </select>
+    
+    <select id="FAQList" resultType="com.example.domain.BoardVO">
+        select * from board order by board_viewcnt desc limit 0, 10
+    </select>
+    
+     <select id="QnARead" resultType="com.example.domain.BoardVO">
+        select * from board where board_bno=#{board_bno} 
+    </select>
+    
+     <select id="FAQRead" resultType="com.example.domain.BoardVO">
+        select * from board where board_bno=#{board_bno}
+    </select>
+    
+    <insert id="QnAInsert">
+    	insert into board(board_title, board_content, board_writer, board_regdate) values(#{board_title}, #{board_content}, #{board_writer}, now())
+    </insert>
+    
+    <update id="QnAUpdate">
+    	update board set board_title=#{board_title}, board_content=#{board_content}, board_updatedate=now() where board_bno=#{board_bno}
+    </update>
+    
+    <delete id="QnADelete">
+    	delete from board where board_bno=#{board_bno}
+    </delete>
+    
+    <select id="totalCount" resultType="int">
+    	select count(*) from board
+    </select>
+    
+    <update id="UpdateViewcnt">
+    	update board set board_viewcnt=board_viewcnt+1 where board_bno=#{board_bno}
+    </update>
+    
+    <update id="UpdateReplycnt">
+    	update board set board_replycnt=board_replycnt+#{amount} where board_bno=#{board_bno}
+    </update>
+    
+    <select id="replyCount" resultType="int">
+    	select count(*) from board_reply where board_reply_bno=#{board_reply_bno}
+    </select>
+    
+</mapper>

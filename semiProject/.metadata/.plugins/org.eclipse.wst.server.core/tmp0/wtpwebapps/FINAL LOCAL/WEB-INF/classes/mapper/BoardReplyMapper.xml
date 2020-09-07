@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.BoardReplyMapper">
+
+    <select id="QnAList" resultType="com.example.domain.BoardReplyVO">
+        select * from board_reply where board_reply_bno=#{board_reply_bno} 
+        order by board_reply_rno desc limit #{cri.pageStart}, #{cri.perPageNum}
+    </select>
+    
+    <insert id="ReplyInsert">
+    	insert into board_reply(board_reply_bno, board_reply, board_reply_replyer, board_reply_replyDate) 
+    	values(#{board_reply_bno}, #{board_reply}, #{board_reply_replyer}, now())
+    </insert>
+    
+    <delete id="ReplyDelete"> 
+    	delete from board_reply where board_reply_rno=#{board_reply_rno}
+    </delete>
+    
+    <select id="ReplyRead" resultType="com.example.domain.BoardReplyVO">
+    	select * from board_reply where board_reply_rno=#{board_reply_rno}
+    </select>
+    <delete id="ReplyDeleteAll"> 
+       delete from board_reply where board_reply_bno=#{board_bno}
+    </delete>
+</mapper>

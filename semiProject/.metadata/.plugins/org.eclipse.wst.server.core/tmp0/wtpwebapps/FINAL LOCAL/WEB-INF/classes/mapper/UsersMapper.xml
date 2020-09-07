@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.UsersMapper">
+    <select id="read" resultType="com.example.domain.UsersVO">
+       select * from users where users_id=#{users_id}
+    </select>
+     <select id="readcnt" resultType="int">
+        select count(*) from users where users_id=#{users_id}
+    </select>
+	<insert id="insert">
+       insert into users(users_id, users_pass, users_name, users_birthday, users_zipcode, users_address, users_phone, users_email, users_gender, users_note, users_regdate) 
+       values (#{users_id}, #{users_pass}, #{users_name}, #{users_birthday}, #{users_zipcode}, #{users_address}, #{users_phone}, #{users_email}, #{users_gender}, #{users_note}, now())
+    </insert>
+    <update id="update">
+    	update users
+    	set users_pass=#{users_pass}, users_name=#{users_name}, users_birthday=#{users_birthday}, users_zipcode=#{users_zipcode}, users_address=#{users_address}, users_phone=#{users_phone}, users_email=#{users_email}
+    	where users_id=#{users_id}
+    </update>
+    <update id="pointUpdate">
+    	update users set users_point=users_point-#{point} where users_id=#{users_id}
+    </update>
+    
+    <select id="pcnt" resultType="int">
+       select count(users_phone) from users where users_phone=#{users_phone}
+    </select>
+    
+    <select id="ecnt" resultType="int">
+       select count(users_email) from users where users_email=#{users_email}
+    </select>
+    
+    <update id="delete">
+       update users set users_note=2 where users_id=#{users_id};
+    </update>
+    <update id="birthdayPointUpdate">
+    	update users set users_point=users_point+1000 where users_id=#{users_id}
+    </update>
+</mapper>

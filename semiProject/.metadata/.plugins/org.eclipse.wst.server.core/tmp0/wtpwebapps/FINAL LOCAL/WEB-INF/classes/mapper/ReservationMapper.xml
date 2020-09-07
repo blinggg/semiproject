@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ReservationMapper">
+
+    <select id="list" resultType="com.example.domain.ReservationVO">
+        select reservation_reno, reservation_id, reservation_redate, users_name from reservation r, users u where u.users_id=r.reservation_id order by reservation_redate
+    </select>
+    
+    <select id="listpage" resultType="com.example.domain.ReservationVO">
+        select reservation_reno, reservation_id, reservation_redate, users_name from reservation r, users u where u.users_id=r.reservation_id order by reservation_redate DESC limit #{cri.pageStart}, #{cri.perPageNum}
+    </select>
+ 
+    <select id="calendarCount" resultType="int">
+       select count(*) from reservation
+    </select>
+ 
+     <select id="privatelist" resultType="com.example.domain.ReservationVO">
+        select r.*, users_name from reservation r, users u where u.users_id=r.reservation_id and users_id=#{users_id} order by reservation_redate limit #{cri.pageStart}, #{cri.perPageNum}
+    </select>
+    
+    <select id="privateCount" resultType="int">
+        select count(*) from reservation r, users u where u.users_id=r.reservation_id and users_id=#{users_id}
+    </select>
+    
+    <delete id="redelete">
+       delete from reservation where reservation_reno=#{reservation_reno}
+    </delete>
+    
+    <insert id="reinsert">
+       insert into reservation(reservation_id, reservation_redate) values(#{reservation_id}, #{reservation_redate});
+    </insert>
+    
+    <select id="read" resultType="com.example.domain.ReservationVO">
+        select * from reservation where reservation_redate=#{reservation_redate}
+    </select>
+</mapper>

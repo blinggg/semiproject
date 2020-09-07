@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.Photo_PackageMapper">
+    <select id="list" resultType="com.example.domain.Photo_PackageVO">
+        select * from photo_package
+    </select>
+    
+    <insert id="insert">
+       insert into photo_package(photo_package_code, photo_package_title, photo_package_price, photo_package_image) 
+       values(#{photo_package_code}, #{photo_package_title}, #{photo_package_price}, #{photo_package_image})
+    </insert>
+    
+     <select id="read" resultType="com.example.domain.Photo_PackageVO">
+        select * from photo_package where photo_package_code=#{photo_package_code}
+    </select>
+    
+      <update id="update">
+       update photo_package set photo_package_title=#{photo_package_title}, photo_package_price=#{photo_package_price}, photo_package_image=#{photo_package_image} where photo_package_code=#{photo_package_code}
+    </update>
+    
+    <delete id="delete">
+       delete from photo_package where photo_package_code=#{photo_package_code}
+    </delete>
+    
+    <insert id="addAttach">
+       insert into attach(image, photo_package_code) values(#{image}, #{photo_package_code})
+    </insert>
+    
+    <select id="getAttach" resultType="com.example.domain.AttachVO">
+       select a_no, image from attach where photo_package_code=#{photo_package_code}
+    </select> 
+    
+    <delete id="delAttach">
+       delete from attach where a_no=#{a_no}
+    </delete>
+    
+    <update id="updateAttach">
+       update attach set image=#{image} where a_no=#{a_no}
+    </update>
+    
+    <select id="getImage" resultType="String">
+    	select image from attach where a_no=#{a_no}
+    </select>
+</mapper>

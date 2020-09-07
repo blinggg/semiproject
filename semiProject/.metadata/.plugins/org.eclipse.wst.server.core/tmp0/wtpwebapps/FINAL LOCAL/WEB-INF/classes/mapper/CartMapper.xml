@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CartMapper">
+   	<!-- 장바구니 목록 -->
+    <select id="plist" resultType="hashmap">
+        select pack.*, p.*, pack.package_cart_quantity*p.photo_package_price totprice
+		from package_cart pack, photo_package p
+		where package_cart_package_code=photo_package_code and package_cart_status not in(1)
+		and package_cart_id=#{package_cart_id}
+    </select>
+    <select id="clist" resultType="hashmap">
+		select cos.*, c.*, cos.costume_cart_quantity*c.lend_costume_price totprice
+		from costume_cart cos, lend_costume c
+		where costume_cart_costume_code=lend_costume_code and costume_cart_status not in(1)
+		and costume_cart_id=#{costume_cart_id}
+    </select>
+    <!-- 장바구니 삭제 -->
+    <delete id="pdelete">
+    	delete from package_cart where package_cart_no=#{package_cart_no}
+    </delete>
+    <delete id="cdelete">
+    	delete from costume_cart where costume_cart_no=#{costume_cart_no}
+    </delete>
+    <!-- 장바구니 수량변경 -->
+    <update id="pUpdate">
+		update package_cart set package_cart_quantity=#{package_cart_quantity} where package_cart_no=#{package_cart_no}
+    </update>
+    <update id="cUpdate">
+		update costume_cart set costume_cart_quantity=#{costume_cart_quantity} where costume_cart_no=#{costume_cart_no}
+    </update>
+    <insert id="pinsert">
+    	insert into package_cart(package_cart_id, package_cart_package_code, package_cart_quantity, package_cart_price)
+		values(#{package_cart_id}, #{package_cart_package_code}, 1, #{package_cart_price});
+    </insert>
+    <insert id="cinsert">
+    	insert into costume_cart(costume_cart_id, costume_cart_costume_code, costume_cart_quantity, costume_cart_price, costume_size)
+    	values(#{costume_cart_id}, #{costume_cart_costume_code}, #{costume_cart_quantity}, #{costume_cart_price}, #{costume_size});
+    </insert>
+    <select id="pread" resultType="com.example.domain.Package_CartVO">
+    	select pk.*, pp.photo_package_code, pp.photo_package_title, pp.photo_package_image 
+		from package_cart pk, photo_package pp
+		where pp.photo_package_code = pk.package_cart_package_code and package_cart_no=#{package_cart_no}
+    </select>
+    <select id="cread" resultType="com.example.domain.Costume_CartVO">
+		select cc.*, lc.lend_costume_name, lc.lend_costume_image, lc.lend_costume_code
+		from costume_cart cc, lend_costume lc 
+		where lc.lend_costume_code = cc.costume_cart_costume_code and costume_cart_no=#{costume_cart_no}
+    </select>
+    <select id="PackageCartRead" resultType="com.example.domain.Package_CartVO">
+    	select * from package_cart where package_cart_package_code=#{package_cart_package_code} and package_cart_id=#{package_cart_id}
+    </select>
+    <select id="CostumeCartRead" resultType="com.example.domain.Costume_CartVO">
+    	select * from costume_cart where costume_cart_costume_code=#{costume_cart_costume_code} and costume_cart_id=#{costume_cart_id}
+    </select>
+    <update id="packageQuantityUpdate">
+    	update package_cart set package_cart_quantity=package_cart_quantity+1 where package_cart_no=#{package_cart_no}
+    </update>
+    <update id="costumeQuantityUpdate">
+    	update costume_cart set costume_cart_quantity=costume_cart_quantity+#{costume_cart_quantity} where costume_cart_no=#{costume_cart_no}
+    </update>
+    <update id="PackageStatusUpdate">
+    	update package_cart set package_cart_status=1 where package_cart_no=#{packageCartNo}
+    </update>
+    <update id="CostumeStatusUpdate">
+    	update costume_cart set costume_cart_status=1 where costume_cart_no=#{costumeCartNo}
+    </update>
+    <select id="costumeCnt" resultType="int">
+    	select count(*) from costume_cart where costume_cart_costume_code=#{costume_cart_costume_code}
+    </select>
+    
+    <update id="pointAdd">
+        update users set users_point=users_point+(#{totalsum}*0.01) where users_id=#{orders_id}
+    </update>
+</mapper>
